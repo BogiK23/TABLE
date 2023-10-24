@@ -1,0 +1,240 @@
+
+<!doctype html>
+<html lang="hu">
+<head>
+	<meta charset="utf-8"/>
+	<meta content='True' name='HandheldFriendly'/>
+	<meta content='width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;' name='viewport'/>
+	<meta name="viewport" content="width=device-width"/>
+	<meta name="ROBOTS" content="NOINDEX, NOFOLLOW"/>
+	<meta name="mobile-web-app-capable" content="yes"/>
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<title>Loquu asztalfoglalás</title>
+	<link rel="shortcut icon" type="image/png" href="images/loquu_logo_small.png"/>
+</head>
+<body>
+<div>
+    <style>
+        #loq-reservation {
+            position: relative;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 10px;
+            color: white;
+            background-color: #343637;
+        }
+
+        #loq-reservation .loq-reservation__title {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        #loq-reservation label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        #loq-reservation input, #loq-reservation select, #loq-reservation textarea {
+            display: block;
+            box-sizing: border-box;
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 5px 8px;
+            background-color: #424242;
+            color: white;
+            border: 1px solid rgba(254, 254, 254, 0.3);
+            border-radius: 5px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        #loq-reservation input:hover, #loq-reservation select:hover, #loq-reservation textarea:hover,
+        #loq-reservation input:focus, #loq-reservation select:focus, #loq-reservation textarea:focus {
+            border-color: #fff;
+        }
+
+        #loq-reservation button {
+            display: block;
+            padding: 10px 30px;
+            color: white;
+            background-color: transparent;
+            border: 1px solid rgba(254, 254, 254, 0.3);
+            text-align: center;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        #loq-reservation button:hover,
+        #loq-reservation button:focus {
+            color: black;
+            background-color: #fff;
+        }
+
+        #loq-reservation .loq-reservation__row {
+            display: flex;
+            align-items: flex-end
+        }
+
+        #loq-reservation .loq-reservation__column {
+            width: 100%;
+            margin-right: 10px;
+        }
+
+        #loq-reservation .loq-reservation__flex--1 {
+            flex: 1;
+        }
+
+        #loq-reservation .loq-reservation__flex--2 {
+            flex: 2;
+        }
+
+        #loq-reservation .loq-reservation__column:last-child {
+            margin-right: 0;
+        }
+
+        #loq-reservation #loq-reservation__form_errors {
+            display: none;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 3px 3px 3px 3px;
+            color: #D8000C;
+            background-color: #FFBABA;
+        }
+
+        #loq-reservation #loq-reservation__form_errors.loq-show {
+            display: block;
+        }
+
+        #loq-reservation #loq-reservation__form_info {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 3px 3px 3px 3px;
+            color: black;
+            background-color: #ffaa0e;
+        }
+
+        #loq-reservation #loq-reservation-success-panel {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: #4cff04;
+            font-size: 1.5em;
+            text-align: center;
+        }
+
+        #loq-reservation #loq-reservation-success-panel.loq-show {
+            display: flex;
+        }
+
+        #loq-reservation #loq-reservation__highlight-text {
+            font-size: 1.3em;
+        }
+
+        @media screen and (max-width: 420px) {
+            #loq-reservation .loq-reservation__row {
+                display: block;
+            }
+        }
+
+    </style>
+    <div id="loq-reservation">
+        <div class="loq-reservation__title">
+            Asztalfoglalás
+        </div>
+        <form action="" method="post" onsubmit="loq_submitReservation(); return false;">
+            <div class="loq-reservation__row">
+                <div class="loq-reservation__column">
+                    <label>Név</label>
+                    <input type="text" id="loq-reservation__form-item--name">
+                </div>
+                <div class="loq-reservation__column">
+                    <label>Kártyaszám (nem kötelező)</label>
+                    <input type="text" id="loq-reservation__form-item--card-number">
+                </div>
+            </div>
+
+            <div class="loq-reservation__row">
+                <div class="loq-reservation__column loq-reservation__flex--1">
+                    <label>Telefonszám</label>
+                    <input type="text" id="loq-reservation__form-item--phone-number">
+                </div>
+                <div class="loq-reservation__column loq-reservation__flex--2">
+                    <label>E-mail cím</label>
+                    <input type="text" id="loq-reservation__form-item--email">
+                </div>
+            </div>
+            <div class="loq-reservation__row">
+                <div class="loq-reservation__column">
+                    <label>Foglalás napja</label>
+                    <input type="date"
+                           id="loq-reservation__form-item--from-date"
+                           onchange="loq_setTimeSelectOptions();">
+                </div>
+                <div class="loq-reservation__column">
+                    <label>Foglalás időpontja</label>
+                    <select id="loq-reservation__form-item--from-time"></select>
+                </div>
+            </div>
+
+            <div class="loq-reservation__row">
+                <div class="loq-reservation__column">
+                    <label>Foglalás időtartama (óra)</label>
+                    <select id="loq-reservation__form-item--hour"></select>
+                </div>
+                <div class="loq-reservation__column">
+                    <label>Helyek száma</label>
+                    <select id="loq-reservation__form-item--seats"></select>
+                </div>
+            </div>
+
+            <label>Megjegyzés</label>
+            <textarea id="loq-reservation__form-item--comment"></textarea>
+
+            <div id="loq-reservation__form_errors"></div>
+
+            <button type="submit" id="loq-reservation__form-item--submit">Foglalás küldése</button>
+
+            <div id="loq-reservation__form_info">
+                Ha nem tudja kiválasztani a kívánt foglalási adatokat, akkor hívjon minket telefonon!
+            </div>
+        </form>
+        <div id="loq-reservation-success-panel">
+            <div>
+                <div id="loq-reservation__highlight-text">
+                    Sikeres foglalás küldés!
+                </div>
+                A foglalásról e-mail értesítést küldünk.
+            </div>
+        </div>
+    </div>
+    <script>
+        const loq_url = 'https://podiumbistro.loquu.com/loquu/public/uploadReservationData'; // Az adott Loquu url-je
+        const loq_location_id = '139188405'; //A helyszín id-je, amire a foglalások mennek
+        const loq_api_key = 'tableReservationApiKey'; //Ez így jó, de lehet a publikus apiKey is
+        const loq_form_item_time_start = 9; // Ettől az órától lehet foglalni
+        const loq_form_item_time_end = 22; // Eddig az óráig lehet foglalni
+        const loq_form_item_hour_start = 1; // Ennyi órára lehet foglalni minimum
+        const loq_form_item_hour_end = 8; // Ennyi órára lehet foglalni maximum
+        const loq_form_item_seats_start = 1; // Ennyi széket lehet foglalni minnimum
+        const loq_form_item_seats_end = 8; // Ennyi széket lehet foglalni maximum
+        const loq_form_item_from_date_plus = 1; // Ennyivel későbbre lehet csak foglalni az aktuális időtől
+        const loq_loader_text = 'Betöltés...';
+        const loq_name_required_error_text = 'Név megadása kötelező!';
+        const loq_phone_required_error_text = 'Telefonszám megadása kötelező!';
+        const loq_email_required_error_text = 'E-mail cím megadása kötelező!';
+        const loq_from_date_required_error_text = 'Foglalás napjának megadása kötelező!';
+        const loq_from_time_required_error_text = 'Foglalás időpontjának megadása kötelező!';
+        const loq_system_error_text = 'Rendszer hiba! Kérjük vegye fel velünk a kapcsolatot!';
+
+        function loq_addIntervalOptions(a,b,c){const d=document.getElementById(a);for(let e=b;e<=c;e++){const a=document.createElement("option");a.text=e,a.value=e,d.add(a)}}let loq_lock=!1;function loq_submitReservation(){if(loq_lock)return;loq_lock=!0;const a=document.getElementById("loq-reservation__form-item--name").value.trim(),b=document.getElementById("loq-reservation__form-item--card-number").value.trim(),c=document.getElementById("loq-reservation__form-item--phone-number").value.trim(),d=document.getElementById("loq-reservation__form-item--email").value,e=document.getElementById("loq-reservation__form-item--from-date").value,f=document.getElementById("loq-reservation__form-item--from-time").value,g=parseInt(document.getElementById("loq-reservation__form-item--hour").value),h=parseInt(document.getElementById("loq-reservation__form-item--seats").value),i=document.getElementById("loq-reservation__form-item--comment").value,j=new Date(e+"T"+f),k=new Date(j.getTime());k.setHours(k.getHours()+g);const l=document.getElementById("loq-reservation__form-item--submit"),m=document.getElementById("loq-reservation__form_errors"),n=document.getElementById("loq-reservation-success-panel"),o=l.innerHTML;l.innerHTML=loq_loader_text,m.classList.remove("loq-show"),m.textContent="";let p=[];if(""===a&&p.push(loq_name_required_error_text),""===c&&p.push(loq_phone_required_error_text),""===d&&p.push(loq_email_required_error_text),""===e&&p.push(loq_from_date_required_error_text),""===f&&p.push(loq_from_time_required_error_text),0===p.length){let e={name:a,cardNumber:b,phoneNumber:c,email:d,fromDate:loq_getDateWithFormat(j),toDate:loq_getDateWithFormat(k),seats:h,comment:i,locationId:loq_location_id,sendEmail:!0,apiKey:loq_api_key};const f=new XMLHttpRequest;f.onreadystatechange=function(){if(4===this.readyState){if(200===this.status){const a=JSON.parse(this.responseText);0===a.errorCode?n.classList.add("loq-show"):(loq_addError(loq_system_error_text),m.classList.add("loq-show"))}else loq_addError(loq_system_error_text),m.classList.add("loq-show");loq_lock=!1,l.innerHTML=o}},f.open("POST",loq_url,!0),f.send(JSON.stringify(e))}else{for(const a of p)loq_addError(a);m.classList.add("loq-show"),loq_lock=!1,l.innerHTML=o}}function loq_addError(a){const b=document.getElementById("loq-reservation__form_errors"),c=document.createElement("div");c.textContent="- "+a,b.appendChild(c)}function loq_getDateWithFormat(a){return a.getFullYear()+"-"+("00"+(a.getMonth()+1)).slice(-2)+"-"+("00"+a.getDate()).slice(-2)+" "+("00"+a.getHours()).slice(-2)+":"+("00"+a.getMinutes()).slice(-2)+":"+("00"+a.getSeconds()).slice(-2)}function loq_setTimeSelectOptions(){const a=document.getElementById("loq-reservation__form-item--from-time");a.innerHTML="";for(let b=loq_form_item_time_start;b<=loq_form_item_time_end;b++){const c=[0,30];for(minute of c){const c=("00"+b).slice(-2),d=("00"+minute).slice(-2),e=c+":"+d,f=new Date(from_date.value+"T"+e),g=new Date;g.setHours(g.getHours()+loq_form_item_from_date_plus);const h=new Date(from_date.value+"T"+("00"+loq_form_item_time_end).slice(-2)+":00");if(from_date.value&&g.getTime()<=f.getTime()&&f.getTime()<=h.getTime()){const b=document.createElement("option");b.text=e,b.value=e,a.add(b)}}}}const from_date=document.getElementById("loq-reservation__form-item--from-date");from_date.value=new Date().toISOString().split("T")[0],from_date.min=new Date().toISOString().split("T")[0],loq_setTimeSelectOptions(),loq_addIntervalOptions("loq-reservation__form-item--hour",loq_form_item_hour_start,loq_form_item_hour_end),loq_addIntervalOptions("loq-reservation__form-item--seats",loq_form_item_seats_start,loq_form_item_seats_end);
+    </script>
+</div>
+</body>
+</html>
